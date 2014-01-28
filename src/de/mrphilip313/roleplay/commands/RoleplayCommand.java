@@ -26,4 +26,17 @@ public abstract class RoleplayCommand implements CommandExecutor{
 		String sep = args == null ? "" : " ";
 		return ChatColor.DARK_PURPLE + getPrefix() + ChatColor.GOLD + " /" + getBaseCommand() + sep + subcommand + ChatColor.GREEN + " " + args;
 	}
+	
+	public String sendPlayerSyntax(String command, String subcommand, String args){
+		String sep = args == null ? "" : " ";
+		return ChatColor.DARK_PURPLE + getPrefix() + ChatColor.GOLD + " /" + command + sep + subcommand + ChatColor.GREEN + " " + args;
+	}
+	
+	public String sendPlayerSyntaxNOSB(String command, String args){
+		return ChatColor.DARK_PURPLE + getPrefix() + ChatColor.GOLD + " /" + command + ChatColor.GREEN + " " + args;
+	}
+	
+	public String sendPlayerAdminRightsFailure(String rangname){
+		return ChatColor.DARK_PURPLE + getPrefix() + " " + ChatColor.RED + "Dein Adminrang ist zu niedrig. Benötigter Rang: " + ChatColor.GOLD + ChatColor.BOLD + rangname;
+	}
 }

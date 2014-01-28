@@ -21,6 +21,10 @@ public class Players {
 		return players.get(username);
 	}
 	
+	public static PlayerInformation getPlayerEntry(Player player){
+		return players.get(player.getName());
+	}
+	
 	public static void deletePlayerEntry(String username){
 		players.remove(username);
 		freezedPlayers.remove(username);

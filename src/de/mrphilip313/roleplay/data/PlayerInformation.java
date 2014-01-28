@@ -234,4 +234,23 @@ public class PlayerInformation{
 		}
 		return false;
 	}
+	
+	public void processTimeBanned(){
+		if(this.timeBanned <= 1){
+			this.unBan();
+		} else {
+			--this.timeBanned;
+		}
+	}
+	
+	public boolean unBan(){
+		if(this.isBanned && !this.isPermBanned && (this.timeBanned <= 1)){
+			this.timeBanned = 0;
+			this.banReason = "";
+			this.banner = "";
+			this.isPermBanned = false;
+			this.isBanned = false;
+		}
+		return false;
+	}
 }

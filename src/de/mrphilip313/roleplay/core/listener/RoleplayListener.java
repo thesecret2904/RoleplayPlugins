@@ -60,6 +60,7 @@ public class RoleplayListener implements Listener{
 		String name = event.getPlayer().getName();
 		BaseDBFunctions.savePlayer(event.getPlayer());
 		Players.deletePlayerEntry(name);
+		System.out.println(event.getQuitMessage().toString());
 	}
 	
 	@EventHandler

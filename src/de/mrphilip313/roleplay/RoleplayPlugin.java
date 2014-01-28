@@ -30,7 +30,6 @@ import de.mrphilip313.roleplay.commands.chat.WChatCommand;
 import de.mrphilip313.roleplay.core.database.WarpManager;
 import de.mrphilip313.roleplay.core.database.core.MySQL;
 import de.mrphilip313.roleplay.core.handler.BanHandler;
-import de.mrphilip313.roleplay.core.handler.PaydayHandler;
 import de.mrphilip313.roleplay.core.listener.RoleplayListener;
 import de.mrphilip313.roleplay.core.security.ChatlogFilter;
 
