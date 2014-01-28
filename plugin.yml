@@ -1,0 +1,22 @@
+name: Roleplay
+main: de.mrphilip313.roleplay.RoleplayPlugin
+version: 1.0
+depend: [ProtocolLib]
+commands:
+   account:
+      login:
+      register:
+      logout:
+   admin:
+   effect:
+   name:
+   kill:
+   warp:
+   me:
+   rp:
+   s:
+   l:
+   w:
+   o:
+   b:
+   payday:
