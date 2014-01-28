@@ -278,9 +278,38 @@ public class BaseDBFunctions {
 		}
 	}
 	
+	public static boolean doesUsernameExist(String username){
+		ResultSet result = executeQuery("SELECT username FROM user_base WHERE username='" + username + "';");
+		try {
+			if(result != null && result.next()) return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
 	
+	public static void banUser(String user, String banner, String reason){
+		banUser(user, banner, reason, true, 0);
+	}
 	
+	public static void banUser(String user, String banner, String reason, int time){
+		banUser(user, banner, reason, false, time);
+	}
 	
+	public static void banUser(String user, String banner, String reason, boolean isPerm, int time){
+		try {
+			PreparedStatement statement = RoleplayPlugin.getConnection().prepareStatement(STATEMENT_INSERT_BANNED);
+			statement.setString(1, user);
+			statement.setBoolean(2, true);
+			statement.setBoolean(3, isPerm);
+			statement.setString(4, reason);
+			statement.setString(5, banner);
+			statement.setInt(6, time);
+			statement.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	
 	
