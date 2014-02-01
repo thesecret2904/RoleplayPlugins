@@ -8,7 +8,7 @@ import org.bukkit.command.CommandSender;
 public abstract class RoleplayCommand implements CommandExecutor{
 
 	@Override
-	public abstract boolean onCommand(CommandSender arg0, Command arg1, String arg2, String[] arg3);
+	public abstract boolean onCommand(CommandSender cmdSender, Command cmd, String label, String[] args);
 	
 	public abstract String getPrefix();
 	
@@ -29,11 +29,11 @@ public abstract class RoleplayCommand implements CommandExecutor{
 	
 	public String sendPlayerSyntax(String command, String subcommand, String args){
 		String sep = args == null ? "" : " ";
-		return ChatColor.DARK_PURPLE + getPrefix() + ChatColor.GOLD + " /" + command + sep + subcommand + ChatColor.GREEN + " " + args;
+		return ChatColor.DARK_PURPLE + getPrefix() + ChatColor.RED + " Syntax: " + ChatColor.GOLD + " /" + command + sep + subcommand + ChatColor.GREEN + " " + args;
 	}
 	
 	public String sendPlayerSyntaxNOSB(String command, String args){
-		return ChatColor.DARK_PURPLE + getPrefix() + ChatColor.GOLD + " /" + command + ChatColor.GREEN + " " + args;
+		return ChatColor.DARK_PURPLE + getPrefix() + ChatColor.RED + " Syntax: " + ChatColor.GOLD + " /" + command + ChatColor.GREEN + " " + args;
 	}
 	
 	public String sendPlayerAdminRightsFailure(String rangname){

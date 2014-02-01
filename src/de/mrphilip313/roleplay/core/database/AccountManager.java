@@ -40,10 +40,6 @@ public class AccountManager {
 		Players.setUnfreezed(username);
 	}
 	
-	public void changePassword(String password){
-		BaseDBFunctions.changePassword(username, password);
-	}
-	
 	private PlayerInformation standartInfo(){
 		PlayerInformation pInfo = new PlayerInformation();
 		pInfo.setUsername(this.username);

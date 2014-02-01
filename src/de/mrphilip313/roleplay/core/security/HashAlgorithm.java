@@ -2,7 +2,6 @@ package de.mrphilip313.roleplay.core.security;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 
 public class HashAlgorithm {
 	public static String toSHA1(String input){
@@ -22,13 +21,7 @@ public class HashAlgorithm {
 		return result;
 	}
 	
-	public static String generateSalt(){
-		SecureRandom random = new SecureRandom();
-		byte salt[] = random.generateSeed(80);
-		return String.valueOf(salt).substring(3);
-	}
-	
-	public static String getDoubleSaltedHash(String input, String salt) {
-	    return toSHA1(salt + toSHA1(salt + toSHA1(input)));
+	public static String doubleSHAHash(String password){
+		return toSHA1(toSHA1(password));
 	}
 }

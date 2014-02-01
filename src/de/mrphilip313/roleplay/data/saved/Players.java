@@ -11,6 +11,7 @@ public class Players {
 	public static ConcurrentHashMap<String, PlayerInformation> players = new ConcurrentHashMap<String, PlayerInformation>();
 	public static ConcurrentHashMap<String, String> rpnames = new ConcurrentHashMap<String, String>();
 	public static ConcurrentHashMap<String, Boolean> freezedPlayers = new ConcurrentHashMap<String, Boolean>();
+	public static ConcurrentHashMap<String, Boolean> vanishedPlayers = new ConcurrentHashMap<String, Boolean>();
 	
 	
 	public static void addPlayerEntry(String username, PlayerInformation pInfo){
@@ -31,22 +32,34 @@ public class Players {
 		rpnames.remove(username);
 	}
 	
+	
 	public static void setFreezed(String username){
-		System.out.println("freezed " + username);
 		freezedPlayers.put(username, true);
 	}
 	
 	public static void setUnfreezed(String username){
-		System.out.println("unfreezed " + username);
 		freezedPlayers.put(username, false);
 	}
-	
-
 	
 	public static boolean isFreezed(String username){
 		if(!(freezedPlayers.get(username) == null)) return freezedPlayers.get(username);
 		return false;
 	}
+	
+	
+	public static void setVanished(String username){
+		vanishedPlayers.put(username, true);
+	}
+	
+	public static void setVisisble(String username){
+		vanishedPlayers.put(username, false);
+	}
+	
+	public static boolean isVanished(String username){
+		if(!(vanishedPlayers.get(username) == null)) return vanishedPlayers.get(username);
+		return false;
+	}
+	
 	
 	public static String getRPName(Player player){
 		return getRPName(player.getName());
@@ -63,6 +76,7 @@ public class Players {
 	public static void setRPName(String player, String name){
 		setRPName(Bukkit.getServer().getPlayer(player), name);
 	}
+	
 	
 	public static void setDisplayName(Player player, String name){
 		player.setPlayerListName(name);

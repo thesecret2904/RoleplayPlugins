@@ -39,16 +39,7 @@ public class AccountCommand extends RoleplayCommand{
 						} else {
 							player.sendMessage(sendPlayerCommandError("Du bist bereits registriert"));
 						}	
-						return true;
-						
-						
-						
-						
-						
-						
-						
-						
-						
+						return true;					
 					case "login":
 						if (!am.isPlayerLoggedIn()){
 							if(args.length == 2){
@@ -77,25 +68,7 @@ public class AccountCommand extends RoleplayCommand{
 							player.sendMessage(sendPlayerCommandError("Du bist nicht angemeldet"));
 						}
 						return true;
-						
-					case "changepw":
-						if (am.isPlayerLoggedIn()) {
-							if (args.length == 3) {
-								if (am.isPasswordCorrect(args[1])) {
-									am.changePassword(args[2]);
-									player.sendMessage(sendPlayerCommandSuccses("Du hast dein Password erfolgreich geändert"));
-								} else {
-									player.sendMessage(sendPlayerCommandError("Das eingegebene Password ist falsch"));
-								}
-							} else {
-								player.sendMessage(sendPlayerSyntax("changepw", "[altes pw] [neues pw]"));
-							}
-						} else {
-							player.sendMessage(sendPlayerCommandError("Du bist nicht angemeldet"));
-						}
-						
-						return true;
-						
+	
 					case "hilfe":
 						player.sendMessage(ChatColor.RED + "/account");
 						player.sendMessage(ChatColor.GOLD + "    register " + ChatColor.GREEN + " [password] [wiederholung]");

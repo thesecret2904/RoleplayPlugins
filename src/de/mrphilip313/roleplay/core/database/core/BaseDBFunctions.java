@@ -188,33 +188,50 @@ public class BaseDBFunctions {
 	}
 	
 	public static void registerPlayer(Player player, String password){
-		String salt = HashAlgorithm.generateSalt();
-		String hash = HashAlgorithm.getDoubleSaltedHash(password, salt);
-
 		try {
-			PreparedStatement statement = RoleplayPlugin.getConnection().prepareStatement("INSERT INTO login (username, password, salt) VALUES (?, ?, ?)");
+			PreparedStatement statement = RoleplayPlugin.getConnection().prepareStatement("INSERT INTO phpbb_users (username, username_clean, user_password, user_permissions, user_sig, user_occ, user_interests) VALUES (?, ?, ?, ?, ?, ?, ?)");
 			statement.setString(1, player.getName());
-			statement.setString(2, hash);
-			statement.setString(3, salt);
+			statement.setString(2, player.getName().toLowerCase());
+			statement.setString(3, HashAlgorithm.doubleSHAHash(password));
+			statement.setString(4, "");
+			statement.setString(5, "");
+			statement.setString(6, "");
+			statement.setString(7, "");
+			statement.execute();
+			
+			int uID = 0;
+			String query = "SELECT user_id FROM phpbb_users WHERE username='" + player.getName() + "';";
+			ResultSet result = executeQuery(query);
+			if(result.next()){
+				uID = result.getInt("user_id");
+			}
+			
+			statement = RoleplayPlugin.getConnection().prepareStatement("INSERT INTO phpbb_user_group (user_id, group_id) VALUES (?, ?)");
+			statement.setInt(1, uID);
+			statement.setInt(2, 10);
 			statement.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public static void changePassword(String username, String password){
-		String salt = HashAlgorithm.generateSalt();
-		String hash = HashAlgorithm.getDoubleSaltedHash(password, salt);
-
-		executeUpdate("UPDATE login SET password='" + hash + "', salt='" + salt + "' WHERE username='" + username + "';");	
+	public static boolean isBanned(String username){
+		try {
+			ResultSet result = executeQuery("SELECT banned FROM banned WHERE username='" + username + "';");
+			if(result.next()){
+				return result.getBoolean("banned");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 	
 	public static boolean isPasswordCorrect(String username, String password){
 		try {
-			ResultSet result = executeQuery("SELECT password, salt FROM login WHERE username='" + username + "';");
+			ResultSet result = executeQuery("SELECT user_password FROM phpbb_users WHERE username='" + username + "';");
 			if(result.next()){
-				String salt = result.getString("salt");
-				if(result.getString("password").equals(HashAlgorithm.getDoubleSaltedHash(password, salt))) return true;
+				if(result.getString("user_password").equals(HashAlgorithm.doubleSHAHash(password))) return true;
 				else return false;
 			}
 		} catch (SQLException e) {
@@ -224,7 +241,7 @@ public class BaseDBFunctions {
 	}
 	
 	public static boolean isUserRegistered(String username){
-		ResultSet result = executeQuery("SELECT username FROM login WHERE username='" + username + "';");
+		ResultSet result = executeQuery("SELECT username FROM phpbb_users WHERE username='" + username + "';");
 		try {
 			if(result.next() && result.getString("username").equals(username))
 				return true;
@@ -305,6 +322,21 @@ public class BaseDBFunctions {
 			statement.setString(4, reason);
 			statement.setString(5, banner);
 			statement.setInt(6, time);
+			statement.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void unBanUser(String user){
+		try {
+			PreparedStatement statement = RoleplayPlugin.getConnection().prepareStatement(STATEMENT_INSERT_BANNED);
+			statement.setString(1, user);
+			statement.setBoolean(2, false);
+			statement.setBoolean(3, false);
+			statement.setString(4, "");
+			statement.setString(5, "");
+			statement.setInt(6, 0);
 			statement.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();

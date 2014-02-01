@@ -15,4 +15,10 @@ public class ChatUtils {
 			}
 		}
 	}
+	
+	public static void sendMessageToPlayers(String message){
+		for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+			player.sendMessage(message);
+		}
+	}
 }

@@ -22,6 +22,7 @@ import org.kitteh.tag.PlayerReceiveNameTagEvent;
 
 import de.mrphilip313.roleplay.RoleplayPlugin;
 import de.mrphilip313.roleplay.core.chat.ChatUtils;
+import de.mrphilip313.roleplay.core.database.VanishManager;
 import de.mrphilip313.roleplay.core.database.core.BaseDBFunctions;
 import de.mrphilip313.roleplay.data.PlayerInformation;
 import de.mrphilip313.roleplay.data.enums.Adminlevel;
@@ -35,8 +36,7 @@ public class RoleplayListener implements Listener{
 	public void onPlayerJoin(PlayerJoinEvent event){
 		event.setJoinMessage(null);
 		Player player = event.getPlayer();
-		Players.setDisplayName(player, ChatColor.YELLOW + player.getName());
-		player.teleport(Locations.loginSpawn);
+		VanishManager.vanishForAllPlayers(player);
 		player.setFlying(false);
 		player.getInventory().clear();
 		player.getInventory().setHelmet(null);
@@ -44,14 +44,21 @@ public class RoleplayListener implements Listener{
 		player.getInventory().setLeggings(null);
 		player.getInventory().setBoots(null);
 		player.getEnderChest().clear();
-		player.setAllowFlight(true);
+		if(BaseDBFunctions.isBanned(player.getName())){
+			Players.setDisplayName(player, ChatColor.RED + player.getName());
+			
+			player.teleport(Locations.bannedSpawn);			
+		} else {
+			Players.setDisplayName(player, ChatColor.YELLOW + player.getName());
+			player.teleport(Locations.loginSpawn);
+			Players.setFreezed(player.getName());
+			if(BaseDBFunctions.isUserRegistered(player.getName()))
+				player.sendMessage(ChatColor.DARK_PURPLE + "[Account] " + ChatColor.DARK_GREEN + "Bitte logge dich mit deinem Password ein: " + ChatColor.GOLD + "/account login " + ChatColor.GREEN + "[password]");
+			else
+				player.sendMessage(ChatColor.DARK_PURPLE + "[Account] " + ChatColor.DARK_GREEN + "Bitte registrier dich mit einem Password: " + ChatColor.GOLD + "/account register " + ChatColor.GREEN + "[rpname] [password] [wiederholung]");
+		}
 		
-		Players.setFreezed(player.getName());
-		
-		if(BaseDBFunctions.isUserRegistered(player.getName()))
-			player.sendMessage(ChatColor.DARK_PURPLE + "[Account] " + ChatColor.DARK_GREEN + "Bitte logge dich mit deinem Password ein: " + ChatColor.GOLD + "/account login " + ChatColor.GREEN + "[password]");
-		else
-			player.sendMessage(ChatColor.DARK_PURPLE + "[Account] " + ChatColor.DARK_GREEN + "Bitte registrier dich mit einem Password: " + ChatColor.GOLD + "/account register " + ChatColor.GREEN + "[password] [wiederholung]");
+
 	}
 	
 	@EventHandler
@@ -60,7 +67,6 @@ public class RoleplayListener implements Listener{
 		String name = event.getPlayer().getName();
 		BaseDBFunctions.savePlayer(event.getPlayer());
 		Players.deletePlayerEntry(name);
-		System.out.println(event.getQuitMessage().toString());
 	}
 	
 	@EventHandler
@@ -111,7 +117,7 @@ public class RoleplayListener implements Listener{
 			else if(distance <= ChatDistances.STATE4) string.append(ChatColor.BLACK);
 			else inNear = false;
 			if(inNear){
-				string.append(sender.getName());
+				string.append(Players.getRPName(player));
 				string.append(" sagt: ");
 				string.append(event.getMessage());
 				player.sendMessage(string.toString());
@@ -124,7 +130,7 @@ public class RoleplayListener implements Listener{
 	public void onNameTag(PlayerReceiveNameTagEvent event){
 		PlayerInformation pInfo = Players.getPlayerEntry(event.getNamedPlayer().getName());
 		String tag = event.getNamedPlayer().getName();		
-		if(!pInfo.isLoggedIn()) event.setTag(ChatColor.RED + tag);
+		if(BaseDBFunctions.isBanned(tag)) event.setTag(ChatColor.RED + tag);
 		else if(pInfo.isAdminOnDuty()) event.setTag(ChatColor.LIGHT_PURPLE + tag);
 		else event.setTag(ChatColor.RESET + tag);
 	}

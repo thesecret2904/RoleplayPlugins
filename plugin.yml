@@ -20,3 +20,6 @@ commands:
    o:
    b:
    payday:
+   ban:
+   timeban:
+   
