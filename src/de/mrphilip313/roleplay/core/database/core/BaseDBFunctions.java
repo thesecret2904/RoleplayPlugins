@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.BlockVector;
 
 import de.mrphilip313.roleplay.RoleplayPlugin;
 import de.mrphilip313.roleplay.core.security.HashAlgorithm;
@@ -14,6 +15,7 @@ import de.mrphilip313.roleplay.data.PlayerInformation;
 import de.mrphilip313.roleplay.data.enums.Fraktion;
 import de.mrphilip313.roleplay.data.enums.Jobs;
 import de.mrphilip313.roleplay.data.saved.Locations;
+import de.mrphilip313.roleplay.data.saved.MapLocations;
 import de.mrphilip313.roleplay.data.saved.Players;
 import de.mrphilip313.roleplay.data.utils.InventorySerializer;
 
@@ -23,6 +25,7 @@ public class BaseDBFunctions {
 	public static String STATEMENT_INSERT_INVENTORY = "INSERT INTO inventory (username, content, armor, ender) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE content=VALUES(content), armor=VALUES(armor), ender=VALUES(ender)";
 	public static String STATEMENT_INSERT_BANNED = "INSERT INTO banned (username, banned, permanent, reason, banner, time) VALUES (?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE banned=VALUES(banned), permanent=VALUES(permanent), reason=VALUES(reason), banner=VALUES(banner), time=VALUES(time)";
 	public static String STATEMENT_INSERT_WARP = "INSERT INTO warp (name, pos_x, pos_y, pos_z, pos_yaw, pos_pitch) VALUES (?, ?, ?, ?, ?, ?);";
+	public static String STATEMENT_INSERT_MAP = "INSERT INTO maps (pos_x, pos_y, pos_z) VALUES (?, ?, ?)";
 
 	public static void loadPlayer(Player player){
 		ResultSet result;
@@ -293,6 +296,35 @@ public class BaseDBFunctions {
 			System.out.println(87565);
 			e.printStackTrace();
 		}
+	}
+	
+
+	public static void loadMaps() {
+		ResultSet result = executeQuery("SELECT * FROM maps");
+		try {
+			while(result.next()){
+				MapLocations.add(new BlockVector(result.getInt("pos_x"), result.getInt("pos_y"), result.getInt("pos_z")));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}	
+	}
+	
+	public static void addMap(BlockVector vec){
+		try {
+			PreparedStatement statement = RoleplayPlugin.getConnection().prepareStatement(STATEMENT_INSERT_MAP);
+			statement.setInt(1, vec.getBlockX());
+			statement.setInt(2, vec.getBlockY());
+			statement.setInt(3, vec.getBlockZ());
+			executePreparedStatement(statement);
+		} catch (SQLException e) {
+			System.out.println(888);
+			e.printStackTrace();
+		}		
+	}
+	
+	public static void deleteMap(BlockVector vec){
+		executeUpdate("DELETE FROM maps WHERE pos_x='" + vec.getBlockX() + "' AND pos_y='" + vec.getBlockY() + "' AND pos_z='" + vec.getBlockZ() + "';");
 	}
 	
 	public static boolean doesUsernameExist(String username){

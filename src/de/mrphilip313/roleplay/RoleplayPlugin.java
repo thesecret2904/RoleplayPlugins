@@ -13,7 +13,6 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 
 import de.mrphilip313.roleplay.commands.AccountCommand;
-import de.mrphilip313.roleplay.commands.AdminCommand;
 import de.mrphilip313.roleplay.commands.BlockedCommands;
 import de.mrphilip313.roleplay.commands.NameCommand;
 import de.mrphilip313.roleplay.commands.WarpCommand;
@@ -27,11 +26,13 @@ import de.mrphilip313.roleplay.commands.chat.WChatCommand;
 import de.mrphilip313.roleplay.core.database.WarpManager;
 import de.mrphilip313.roleplay.core.database.core.MySQL;
 import de.mrphilip313.roleplay.core.handler.BanHandler;
+import de.mrphilip313.roleplay.core.listener.MapListener;
 import de.mrphilip313.roleplay.core.listener.RoleplayListener;
 import de.mrphilip313.roleplay.core.security.ChatlogFilter;
+import de.mrphilip313.roleplay.data.saved.MapLocations;
 
 public class RoleplayPlugin extends JavaPlugin{
-	private static final Logger log = Bukkit.getLogger();
+	private static final Logger log = Bukkit.getServer().getLogger();
 	
 	public static RoleplayPlugin plugin = null;	
 	private static Connection con = null;
@@ -64,21 +65,18 @@ public class RoleplayPlugin extends JavaPlugin{
 		scheduler.scheduleSyncRepeatingTask(this, new BanHandler(), 60 * 20L, 60 * 20L);
 		
 		WarpManager.loadWarps();
+		MapLocations.load();
 		
 //		getServer().getPluginManager().registerEvents(new PlayerJoinLeaveListener(), this);
 //		getServer().getPluginManager().registerEvents(new PlayerMoveListener(), this);
 		getServer().getPluginManager().registerEvents(new RoleplayListener(), this);
+		getServer().getPluginManager().registerEvents(new MapListener(), this);
 		
 		
 		getCommand("account").setExecutor(new AccountCommand());
 		getCommand("warp").setExecutor(new WarpCommand());
 		getCommand("name").setExecutor(new NameCommand());
 		getCommand("payday").setExecutor(null);
-		
-		getCommand("ban").setExecutor(new AdminCommand());
-		getCommand("timeban").setExecutor(new AdminCommand());
-		
-		getCommand("effect").setExecutor(new BlockedCommands());
 		getCommand("kill").setExecutor(new BlockedCommands());
 		
 		getCommand("me").setExecutor(new MeChatCommand());
@@ -89,7 +87,7 @@ public class RoleplayPlugin extends JavaPlugin{
 		getCommand("o").setExecutor(new OChatCommand());
 		getCommand("b").setExecutor(new BChatCommand());
 		
-		
+		registerAdminCommands();
 		log.setFilter(new ChatlogFilter());
 		
 	}
@@ -111,7 +109,7 @@ public class RoleplayPlugin extends JavaPlugin{
 	}
 	
 	private void registerAdminCommands(){
-		
+		// TODO registerAdminCommands()
 	}
 	
 

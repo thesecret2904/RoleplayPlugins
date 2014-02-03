@@ -15,6 +15,7 @@ import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -36,7 +37,9 @@ public class RoleplayListener implements Listener{
 	public void onPlayerJoin(PlayerJoinEvent event){
 		event.setJoinMessage(null);
 		Player player = event.getPlayer();
+		Players.addPlayerEntry(player.getName(), new PlayerInformation());
 		VanishManager.vanishForAllPlayers(player);
+		VanishManager.updatePlayer(player);
 		player.setFlying(false);
 		player.getInventory().clear();
 		player.getInventory().setHelmet(null);
@@ -46,7 +49,6 @@ public class RoleplayListener implements Listener{
 		player.getEnderChest().clear();
 		if(BaseDBFunctions.isBanned(player.getName())){
 			Players.setDisplayName(player, ChatColor.RED + player.getName());
-			
 			player.teleport(Locations.bannedSpawn);			
 		} else {
 			Players.setDisplayName(player, ChatColor.YELLOW + player.getName());
@@ -56,11 +58,9 @@ public class RoleplayListener implements Listener{
 				player.sendMessage(ChatColor.DARK_PURPLE + "[Account] " + ChatColor.DARK_GREEN + "Bitte logge dich mit deinem Password ein: " + ChatColor.GOLD + "/account login " + ChatColor.GREEN + "[password]");
 			else
 				player.sendMessage(ChatColor.DARK_PURPLE + "[Account] " + ChatColor.DARK_GREEN + "Bitte registrier dich mit einem Password: " + ChatColor.GOLD + "/account register " + ChatColor.GREEN + "[rpname] [password] [wiederholung]");
-		}
-		
-
+		}	
 	}
-	
+	 
 	@EventHandler
 	public void onPlayerLeave(PlayerQuitEvent event){
 		event.setQuitMessage(null);
@@ -103,6 +103,15 @@ public class RoleplayListener implements Listener{
 	}
 	
 	@EventHandler
+	public void onPlayerInteract(PlayerInteractEvent event){
+		// TODO Adminrechte
+		// TODO JOBS
+		// TODO Fraktionen
+		// TODO HÄuser / Hotels
+		// event.setCancelled(true);
+	}
+	
+	@EventHandler
 	public void onChat(AsyncPlayerChatEvent event){
 		RoleplayPlugin.log(event.getMessage());
 		Player sender = event.getPlayer();
@@ -131,7 +140,7 @@ public class RoleplayListener implements Listener{
 		PlayerInformation pInfo = Players.getPlayerEntry(event.getNamedPlayer().getName());
 		String tag = event.getNamedPlayer().getName();		
 		if(BaseDBFunctions.isBanned(tag)) event.setTag(ChatColor.RED + tag);
-		else if(pInfo.isAdminOnDuty()) event.setTag(ChatColor.LIGHT_PURPLE + tag);
+		else if(pInfo != null && pInfo.isAdminOnDuty()) event.setTag(ChatColor.LIGHT_PURPLE + tag);
 		else event.setTag(ChatColor.RESET + tag);
 	}
 	
