@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -20,7 +21,7 @@ import de.mrphilip313.roleplay.data.saved.Players;
 import de.mrphilip313.roleplay.data.utils.InventorySerializer;
 
 public class BaseDBFunctions {
-	public static String STATEMENT_INSERT_USER_BASE = "INSERT INTO user_base (username, pos_x, pos_y, pos_z, pos_yaw, pos_pitch, level, exp, rpname) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE pos_x=VALUES(pos_x), pos_y=VALUES(pos_y), pos_z=VALUES(pos_z), pos_yaw=VALUES(pos_yaw), pos_pitch=VALUES(pos_pitch), level=VALUES(level), exp=VALUES(exp), rpname=VALUES(rpname)";
+	public static String STATEMENT_INSERT_USER_BASE = "INSERT INTO user_base (username, pos_x, pos_y, pos_z, pos_yaw, pos_pitch, level, exp, rpname, aond) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE pos_x=VALUES(pos_x), pos_y=VALUES(pos_y), pos_z=VALUES(pos_z), pos_yaw=VALUES(pos_yaw), pos_pitch=VALUES(pos_pitch), level=VALUES(level), exp=VALUES(exp), rpname=VALUES(rpname), aond=VALUES(aond)";
 	public static String STATEMENT_INSERT_USER_CONTENT = "INSERT INTO user_content (username, job, fraktion, isLeader, adminLevel, money, moneyBank, payday) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE job=VALUES(job), fraktion=VALUES(fraktion), isLeader=VALUES(isLeader), adminLevel=VALUES(adminLevel), money=VALUES(money), moneyBank=VALUES(moneyBank), payday=VALUES(payday)";
 	public static String STATEMENT_INSERT_INVENTORY = "INSERT INTO inventory (username, content, armor, ender) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE content=VALUES(content), armor=VALUES(armor), ender=VALUES(ender)";
 	public static String STATEMENT_INSERT_BANNED = "INSERT INTO banned (username, banned, permanent, reason, banner, time) VALUES (?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE banned=VALUES(banned), permanent=VALUES(permanent), reason=VALUES(reason), banner=VALUES(banner), time=VALUES(time)";
@@ -31,17 +32,22 @@ public class BaseDBFunctions {
 		ResultSet result;
 		String query;
 		
-		PlayerInformation pInfo = new PlayerInformation();
+		PlayerInformation pInfo = null;
+		
+		if(Players.getPlayerEntry(player) != null) pInfo = Players.getPlayerEntry(player);
+		else pInfo = new PlayerInformation();
+		
 		String name = player.getName();
 
 
 		try {
-			query = "SELECT pos_x, pos_y, pos_z, pos_yaw, pos_pitch, level, exp, rpname FROM user_base WHERE username='" + name + "';";
+			query = "SELECT pos_x, pos_y, pos_z, pos_yaw, pos_pitch, level, exp, rpname, aond FROM user_base WHERE username='" + name + "';";
 			result = executeQuery(query);
 			if(result.next()){
 				pInfo.setUsername(name);
 				pInfo.setLevel(result.getInt("level"));
 				pInfo.setExp(result.getFloat("exp"));
+				pInfo.setAdminOnDuty(result.getBoolean("aond"));
 				
 				Location location = player.getLocation();
 				location.setX(result.getDouble("pos_x"));
@@ -102,10 +108,6 @@ public class BaseDBFunctions {
 				pInfo.setInventory(inventory);
 				pInfo.setArmor(armor);
 				pInfo.setEnder(ender);
-				
-				player.getInventory().setContents(inventory);
-				player.getInventory().setArmorContents(armor);
-				player.getEnderChest().setContents(ender);
 			}
 			else
 			{
@@ -114,7 +116,6 @@ public class BaseDBFunctions {
 			}
 			pInfo.setLoggedIn(true);
 			Players.addPlayerEntry(name, pInfo);
-			Players.setUnfreezed(name);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			player.kickPlayer("Fehler beim auslesen der Daten");
@@ -135,6 +136,9 @@ public class BaseDBFunctions {
 			location = player.getLocation();
 		else
 			location = pInfo.getLocation();	
+		
+		if(pInfo.isBanned() || pInfo.isAdminOnDuty()) location = pInfo.getLocation();
+		else location = player.getLocation();
 
 		try {
 			if (pInfo.isLoggedIn()) {
@@ -148,6 +152,7 @@ public class BaseDBFunctions {
 				statement.setInt(7, player.getLevel());
 				statement.setFloat(8, player.getExp());
 				statement.setString(9, Players.rpnames.get(name));
+				statement.setBoolean(10, pInfo.isAdminOnDuty());
 				statement.execute();
 				
 				statement = RoleplayPlugin.getConnection().prepareStatement(STATEMENT_INSERT_USER_CONTENT);
@@ -163,7 +168,7 @@ public class BaseDBFunctions {
 				
 				statement = RoleplayPlugin.getConnection().prepareStatement(STATEMENT_INSERT_INVENTORY);
 				statement.setString(1, name);
-				if (pInfo.isAdminOnDuty()) {
+				if (pInfo.isAdminOnDuty() || pInfo.isBanned()) {
 					statement.setString(2, InventorySerializer.packInventory(pInfo.getInventory()));
 					statement.setString(3, InventorySerializer.packInventory(pInfo.getArmor()));
 					statement.setString(4, InventorySerializer.packInventory(pInfo.getEnder()));
@@ -373,6 +378,24 @@ public class BaseDBFunctions {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static boolean timeBanUp(Player player){
+		ResultSet result = executeQuery("SELECT timeup FROM banned WHERE username='" + player.getName() + "';");
+		try {
+			if(result != null && result.next()){
+				if(result.getBoolean("timeup")){
+					executeUpdate("UPDATE banned SET timeup = 0 WHERE username='" + player.getName() + "';");
+					player.sendMessage(ChatColor.DARK_PURPLE + "[Ban] " + ChatColor.GREEN + "Während du offline warst ist deine Ban-Zeit abgelaufen");
+					return true;
+				} else {
+					return false;
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 	
 	

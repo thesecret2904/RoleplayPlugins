@@ -44,7 +44,7 @@ public class AccountCommand extends RoleplayCommand{
 						if (!am.isPlayerLoggedIn()){
 							if(args.length == 2){
 								if(am.isPasswordCorrect(args[1])){
-									am.loginPlayer(args[1]);
+									am.loginPlayer();
 									player.sendMessage(sendPlayerCommandSuccses("Du hast dich erfolgreich eingeloggt"));
 								} else {
 									player.sendMessage(sendPlayerCommandError("Das ist eingegebene Passwort ist falsch"));

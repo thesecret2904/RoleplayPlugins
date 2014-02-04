@@ -21,7 +21,6 @@ public class AccountManager {
 		Players.addPlayerEntry(username, standartInfo());
 		Players.setRPName(player, rpname);
 		Players.setDisplayName(player, username);
-		Players.setUnfreezed(username);
 		player.teleport(Locations.gameSpawn);
 	}
 	
@@ -31,13 +30,28 @@ public class AccountManager {
 		Players.deletePlayerEntry(username);
 	}
 	
-	public void loginPlayer(String password){
-		BaseDBFunctions.loadPlayer(player);
+	public void loginPlayer(){
 		Players.setRPName(player, Players.rpnames.get(username));
 		Players.setDisplayName(player, username);
-		System.out.println(Players.rpnames.get(username));
-		player.teleport(Players.getPlayerEntry(this.username).getLocation());
-		Players.setUnfreezed(username);
+		
+		BaseDBFunctions.loadPlayer(player);
+		
+		PlayerInformation pInfo = Players.getPlayerEntry(player);
+		if(pInfo.isBanned()){
+			player.teleport(Locations.bannedSpawn);
+			return;
+		} else {
+			if(pInfo.isAdminOnDuty() || BaseDBFunctions.timeBanUp(player)){
+				pInfo.setAdminOnDuty(false);
+				player.teleport(Players.getPlayerEntry(this.username).getLocation());
+			} else {
+				// TODO mehrere Spawns
+				player.teleport(Locations.gameSpawn);
+			}
+			player.getInventory().setContents(pInfo.getInventory());
+			player.getInventory().setArmorContents(pInfo.getArmor());
+			player.getEnderChest().setContents(pInfo.getEnder());
+		}
 	}
 	
 	private PlayerInformation standartInfo(){

@@ -8,9 +8,8 @@ import org.bukkit.World;
 
 public class Locations {
 	public static Location loginSpawn = new Location(getWorld(), 417, 24, -855);
+	public static Location registerSpawn = new Location(getWorld(), 417, 24, -855);
 	public static Location gameSpawn = new Location(getWorld(), 408, 24, -856);
-//	public static Location loginSpawn = new Location(getWorld(), -760, 62, -330);
-//	public static Location gameSpawn = new Location(getWorld(), -763, 62, -317);
 	public static Location bannedSpawn = new Location(getWorld(), 436, 69, -792);
 	
 	public static ConcurrentHashMap<String, Location> warps = new ConcurrentHashMap<String, Location>();

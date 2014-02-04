@@ -36,10 +36,15 @@ public class RoleplayListener implements Listener{
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event){
 		event.setJoinMessage(null);
+		
+		// Setup PlayerInformation
 		Player player = event.getPlayer();
-		Players.addPlayerEntry(player.getName(), new PlayerInformation());
-		VanishManager.vanishForAllPlayers(player);
-		VanishManager.updatePlayer(player);
+		Players.setFreezed(player.getName());
+		PlayerInformation pInfo = new PlayerInformation();
+		pInfo.setUsername(player.getName());
+		Players.addPlayerEntry(player.getName(), pInfo);
+		
+		// Reset Player
 		player.setFlying(false);
 		player.getInventory().clear();
 		player.getInventory().setHelmet(null);
@@ -47,18 +52,18 @@ public class RoleplayListener implements Listener{
 		player.getInventory().setLeggings(null);
 		player.getInventory().setBoots(null);
 		player.getEnderChest().clear();
-		if(BaseDBFunctions.isBanned(player.getName())){
-			Players.setDisplayName(player, ChatColor.RED + player.getName());
-			player.teleport(Locations.bannedSpawn);			
-		} else {
-			Players.setDisplayName(player, ChatColor.YELLOW + player.getName());
+		
+		// Vanish Player
+		VanishManager.vanishForAllPlayers(player);
+		VanishManager.updatePlayer(player);
+		
+		// Teleport Player
+		if(BaseDBFunctions.isUserRegistered(player.getName())){
 			player.teleport(Locations.loginSpawn);
-			Players.setFreezed(player.getName());
-			if(BaseDBFunctions.isUserRegistered(player.getName()))
-				player.sendMessage(ChatColor.DARK_PURPLE + "[Account] " + ChatColor.DARK_GREEN + "Bitte logge dich mit deinem Password ein: " + ChatColor.GOLD + "/account login " + ChatColor.GREEN + "[password]");
-			else
-				player.sendMessage(ChatColor.DARK_PURPLE + "[Account] " + ChatColor.DARK_GREEN + "Bitte registrier dich mit einem Password: " + ChatColor.GOLD + "/account register " + ChatColor.GREEN + "[rpname] [password] [wiederholung]");
-		}	
+		} else {
+			player.teleport(Locations.registerSpawn);
+		}
+		Players.setUnfreezed(player.getName());
 	}
 	 
 	@EventHandler

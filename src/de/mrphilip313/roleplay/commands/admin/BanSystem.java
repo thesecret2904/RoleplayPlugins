@@ -24,69 +24,68 @@ public class BanSystem extends RoleplayCommand{
 			String nameSender = sender.getName();
 			PlayerInformation pInfo = Players.getPlayerEntry(sender);
 			
-			switch (cmd.getName()) {
-				case "ban":
-					if(args != null && args.length >= 2){
-						if(pInfo.getAdminlevel() > Adminlevel.USER){
-							if(pInfo.isAdminOnDuty()){
-								if(Bukkit.getServer().getPlayer(args[0]) != null){
-									Player player = Bukkit.getServer().getPlayer(args[0]);
-									String reason = Utils.buildString(args, 1);
-									BaseDBFunctions.banUser(player.getName(), sender.getName(), reason);
-									player.kickPlayer("Du wurdes von " + nameSender + " permanent gebannt !\nWenn du Fragen hast, kannst du mit /sup auf dem Server ein Support-Ticket erstellen");
-									ChatUtils.sendMessageToPlayers(ChatColor.RED + player.getName() + " wurde von " + nameSender + " permanent gebannt");
-									ChatUtils.sendMessageToPlayers(ChatColor.RED + "Grund: " + reason);
-								} else {
-									sender.sendMessage(sendPlayerCommandError("Der Spieler ist nicht online"));
-								}
-							} else {
-								sender.sendMessage(sendPlayerCommandError("Du musst dafür Onduty sein!"));
-							}
-						} else {
-							sender.sendMessage(sendPlayerAdminRightsFailure(Adminlevel.MODERATOR_N));
-						}
-					} else {
-						sender.sendMessage(sendPlayerSyntaxNOSB("ban", "[player] [reason]"));
-					}
-					return true;
-
-			case "timeban":
-				if(args != null && args.length >= 3){
-					if(pInfo.getAdminlevel() > Adminlevel.USER){
-						if(pInfo.isAdminOnDuty()){
-							if(Bukkit.getServer().getPlayer(args[0]) != null){
+			if (pInfo.getAdminlevel() > Adminlevel.USER) {
+				if (pInfo.isAdminOnDuty()) {
+					switch (cmd.getName()) {
+					case "ban":
+						if (args != null && args.length >= 2) {
+							if (Bukkit.getServer().getPlayer(args[0]) != null) {
 								Player player = Bukkit.getServer().getPlayer(args[0]);
-								String reason = Utils.buildString(args, 2);
-								BaseDBFunctions.banUser(player.getName(), sender.getName(), reason , Integer.parseInt(args[1]));
-								player.kickPlayer("Du wurdest von " + nameSender + " für " + args[2] +"Minuten gebannt !\nGrund: " + reason + "\nWenn du Fragen hast, kannst du mit /sup auf dem Server ein Support-Ticket erstellen");
-								ChatUtils.sendMessageToPlayers(ChatColor.RED + player.getName() + " wurde von " + nameSender + " für " + args[2] + " Minuten gebannt");
+								String reason = Utils.buildString(args,	1);
+								BaseDBFunctions.banUser(player.getName(), sender.getName(), reason);
+								player.kickPlayer("Du wurdes von " + nameSender + " permanent gebannt !\nWenn du Fragen hast, kannst du mit /sup auf dem Server ein Support-Ticket erstellen");
+								ChatUtils.sendMessageToPlayers(ChatColor.RED + player.getName() + " wurde von " + nameSender + " permanent gebannt");
 								ChatUtils.sendMessageToPlayers(ChatColor.RED + "Grund: " + reason);
 							} else {
-								sender.sendMessage(sendPlayerCommandError("Der Spieler ist nicht online"));
+								sender.sendMessage(sendPlayerCommandError("Der Spieler ist nicht online!"));
 							}
 						} else {
-							sender.sendMessage(sendPlayerCommandError("Du musst dafür Onduty sein"));
+							sender.sendMessage(sendPlayerSyntaxNOSB("ban", "[Spieler] [Grund]"));
 						}
-					} else {
-						sender.sendMessage(sendPlayerAdminRightsFailure(Adminlevel.MODERATOR_N));
+						return true;
+
+					case "timeban":
+						if (args != null && args.length >= 3) {
+							if (Bukkit.getServer().getPlayer(args[0]) != null) {
+								Player player = Bukkit.getServer().getPlayer(args[0]);
+								String reason = Utils.buildString(args,2);
+								BaseDBFunctions.banUser(player.getName(),sender.getName(), reason,Integer.parseInt(args[1]));
+								player.kickPlayer("Du wurdest von " + nameSender + " für " + args[2] + "Minuten gebannt !\nGrund: " + reason + "\nWenn du Fragen hast, kannst du mit /sup auf dem Server ein Support-Ticket erstellen");
+								ChatUtils.sendMessageToPlayers(ChatColor.RED + player.getName() + " wurde von " + nameSender + " für " + args[2] + " Minuten gebannt");
+								ChatUtils .sendMessageToPlayers(ChatColor.RED + "Grund: " + reason);
+							} else {
+								sender.sendMessage(sendPlayerCommandError("Der Spieler ist nicht online!"));
+							}
+						} else {
+							sender.sendMessage(sendPlayerSyntaxNOSB("ban", "[Spieler] [Grund] [Zeit (Min)]"));
+						}
+						return true;
+
+					case "unban":
+						if (args != null && args.length == 1) {
+							if (Bukkit.getServer().getPlayer(args[0]) != null) {
+								Player player = Bukkit.getServer().getPlayer(args[0]);
+								if (Players.getPlayerEntry(player).isBanned()) {
+									Players.getPlayerEntry(player).unBan();
+									player.teleport(Locations.loginSpawn);
+									player.sendMessage(sendPlayerCommandSuccses("Du wurdest entbannt!"));
+									sender.sendMessage(sendPlayerCommandSuccses(player.getName() + " wurde entbannt!"));
+									BaseDBFunctions.unBanUser(player.getName());
+								} else {
+									sender.sendMessage(sendPlayerCommandError("Der Spieler ist nicht gebannt!"));
+								}
+							} else {
+								sender.sendMessage(sendPlayerCommandError("Der Spieler ist nicht online!"));
+							}
+						} else {
+							sender.sendMessage(sendPlayerSyntaxNOSB("unban", "[Spieler]"));
+						}
 					}
 				} else {
-					sender.sendMessage(sendPlayerSyntaxNOSB("ban", "[player] [reason]"));
+					sender.sendMessage(sendPlayerCommandError("Du musst dafür OnDuty sein!"));
 				}
-				return true;
-				
-			case "unban":
-				if(args != null && args.length == 1){
-					if (pInfo.getAdminlevel() > Adminlevel.USER) {
-						if (pInfo.isAdminOnDuty()) {
-							if(Bukkit.getServer().getPlayer(args[0]) != null){
-								Player player = Bukkit.getServer().getPlayer(args[0]);
-								player.sendMessage(sendPlayerCommandSuccses("Du wurdest entbannt"));
-								player.teleport(Locations.loginSpawn);
-							}
-						}
-					}
-				}
+			} else {
+				sender.sendMessage(sendPlayerAdminRightsFailure(Adminlevel.MODERATOR_N));
 			}
 		}		
 		return true;

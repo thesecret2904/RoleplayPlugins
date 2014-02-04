@@ -235,11 +235,12 @@ public class PlayerInformation{
 		return false;
 	}
 	
-	public void processTimeBanned(){
-		if(this.timeBanned <= 1){
-			this.unBan();
-		} else {
+	public boolean processTimeBanned(){
+		if(this.timeBanned >= 1){
 			--this.timeBanned;
+			return false;
+		} else {
+			return true;
 		}
 	}
 	
@@ -250,6 +251,7 @@ public class PlayerInformation{
 			this.banner = "";
 			this.isPermBanned = false;
 			this.isBanned = false;
+			return true;
 		}
 		return false;
 	}
