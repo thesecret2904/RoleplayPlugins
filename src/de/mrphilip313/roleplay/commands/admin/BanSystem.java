@@ -75,14 +75,14 @@ public class BanSystem extends RoleplayCommand{
 									sender.sendMessage(sendPlayerCommandError("Der Spieler ist nicht gebannt!"));
 								}
 							} else {
-								sender.sendMessage(sendPlayerCommandError("Der Spieler ist nicht online!"));
+								sender.sendMessage(sendPlayerNotOnline());
 							}
 						} else {
 							sender.sendMessage(sendPlayerSyntaxNOSB("unban", "[Spieler]"));
 						}
 					}
 				} else {
-					sender.sendMessage(sendPlayerCommandError("Du musst dafür OnDuty sein!"));
+					sender.sendMessage(sendPlayerAonDNeeded());
 				}
 			} else {
 				sender.sendMessage(sendPlayerAdminRightsFailure(Adminlevel.MODERATOR_N));

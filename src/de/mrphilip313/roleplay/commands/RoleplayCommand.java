@@ -39,4 +39,16 @@ public abstract class RoleplayCommand implements CommandExecutor{
 	public String sendPlayerAdminRightsFailure(String rangname){
 		return ChatColor.DARK_PURPLE + getPrefix() + " " + ChatColor.RED + "Dein Adminrang ist zu niedrig. Benötigter Rang: " + ChatColor.GOLD + ChatColor.BOLD + rangname;
 	}
+	
+	public String sendPlayerLoginNeeded(){
+		return sendPlayerCommandError("Du musst dafür angemeldet sein!");
+	}
+	
+	public String sendPlayerAonDNeeded(){
+		return sendPlayerCommandError("Du musst dafür OnDuty sein!");
+	}
+	
+	public String sendPlayerNotOnline(){
+		return sendPlayerCommandError("Der Spieler ist nicht online!");
+	}
 }
