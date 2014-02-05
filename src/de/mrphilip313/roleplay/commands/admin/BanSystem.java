@@ -85,7 +85,7 @@ public class BanSystem extends RoleplayCommand{
 					sender.sendMessage(sendPlayerAonDNeeded());
 				}
 			} else {
-				sender.sendMessage(sendPlayerAdminRightsFailure(Adminlevel.MODERATOR_N));
+				sender.sendMessage(sendPlayerAdminRightsFailure(Adminlevel.MODERATOR));
 			}
 		}		
 		return true;

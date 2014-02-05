@@ -16,6 +16,8 @@ import de.mrphilip313.roleplay.commands.AccountCommand;
 import de.mrphilip313.roleplay.commands.BlockedCommands;
 import de.mrphilip313.roleplay.commands.NameCommand;
 import de.mrphilip313.roleplay.commands.WarpCommand;
+import de.mrphilip313.roleplay.commands.admin.AonDCommand;
+import de.mrphilip313.roleplay.commands.admin.BanSystem;
 import de.mrphilip313.roleplay.commands.chat.BChatCommand;
 import de.mrphilip313.roleplay.commands.chat.LChatCommand;
 import de.mrphilip313.roleplay.commands.chat.MeChatCommand;
@@ -74,7 +76,6 @@ public class RoleplayPlugin extends JavaPlugin{
 		
 		
 		getCommand("account").setExecutor(new AccountCommand());
-		getCommand("warp").setExecutor(new WarpCommand());
 		getCommand("name").setExecutor(new NameCommand());
 		getCommand("payday").setExecutor(null);
 		getCommand("kill").setExecutor(new BlockedCommands());
@@ -109,7 +110,13 @@ public class RoleplayPlugin extends JavaPlugin{
 	}
 	
 	private void registerAdminCommands(){
-		// TODO registerAdminCommands()
+		getCommand("warp").setExecutor(new WarpCommand());
+		
+		getCommand("aond").setExecutor(new AonDCommand());
+		
+		getCommand("ban").setExecutor(new BanSystem());
+		getCommand("timeban").setExecutor(new BanSystem());
+		getCommand("unban").setExecutor(new BanSystem());
 	}
 	
 

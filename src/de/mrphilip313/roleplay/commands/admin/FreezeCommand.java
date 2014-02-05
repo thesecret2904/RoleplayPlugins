@@ -40,7 +40,7 @@ public class FreezeCommand extends RoleplayCommand{
 					sender.sendMessage(sendPlayerCommandError("Du musst dafür OnDuty sein!"));
 				}
 			} else {
-				sender.sendMessage(sendPlayerAdminRightsFailure(Adminlevel.MODERATOR_N));
+				sender.sendMessage(sendPlayerAdminRightsFailure(Adminlevel.MODERATOR));
 			}
 		}
 		return true;

@@ -5,6 +5,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
+import de.mrphilip313.roleplay.data.enums.Adminlevel;
+
 public abstract class RoleplayCommand implements CommandExecutor{
 
 	@Override
@@ -36,8 +38,8 @@ public abstract class RoleplayCommand implements CommandExecutor{
 		return ChatColor.DARK_PURPLE + getPrefix() + ChatColor.RED + " Syntax: " + ChatColor.GOLD + " /" + command + ChatColor.GREEN + " " + args;
 	}
 	
-	public String sendPlayerAdminRightsFailure(String rangname){
-		return ChatColor.DARK_PURPLE + getPrefix() + " " + ChatColor.RED + "Dein Adminrang ist zu niedrig. Benötigter Rang: " + ChatColor.GOLD + ChatColor.BOLD + rangname;
+	public String sendPlayerAdminRightsFailure(int rang){
+		return ChatColor.DARK_PURPLE + getPrefix() + " " + ChatColor.RED + "Dein Adminrang ist zu niedrig. Benötigter Rang: " + ChatColor.GOLD + ChatColor.BOLD + Adminlevel.getName(rang);
 	}
 	
 	public String sendPlayerLoginNeeded(){
