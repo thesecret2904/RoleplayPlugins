@@ -31,7 +31,7 @@ public class AonDCommand extends RoleplayCommand{
 					player.sendMessage(sendPlayerAdminRightsFailure(Adminlevel.MODERATOR));
 				}
 			} else {
-				player.sendMessage(sendPlayerCommandError("Du musst dafür angemeldet sein"));
+				player.sendMessage(sendPlayerCommandError("Du musst dafür angemeldet sein."));
 			}
 		}
 		return true;
