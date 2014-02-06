@@ -14,6 +14,7 @@ import com.comphenix.protocol.ProtocolManager;
 
 import de.mrphilip313.roleplay.commands.AccountCommand;
 import de.mrphilip313.roleplay.commands.BlockedCommands;
+import de.mrphilip313.roleplay.commands.MoneyCommand;
 import de.mrphilip313.roleplay.commands.NameCommand;
 import de.mrphilip313.roleplay.commands.WarpCommand;
 import de.mrphilip313.roleplay.commands.admin.AonDCommand;
@@ -87,6 +88,7 @@ public class RoleplayPlugin extends JavaPlugin{
 		getCommand("w").setExecutor(new WChatCommand());
 		getCommand("o").setExecutor(new OChatCommand());
 		getCommand("b").setExecutor(new BChatCommand());
+		getCommand("money").setExecutor(new MoneyCommand());
 		
 		registerAdminCommands();
 		log.setFilter(new ChatlogFilter());
