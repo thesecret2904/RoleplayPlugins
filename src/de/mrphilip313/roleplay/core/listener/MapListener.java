@@ -33,10 +33,10 @@ public class MapListener implements Listener {
         		if(frame.getItem() != null && frame.getItem().getType() == Material.MAP){
                     if(MapLocations.mapLocations.contains(frame.getLocation().toVector().toBlockVector())) {
                     	MapLocations.remove(frame.getLocation().toVector().toBlockVector());
-                        player.sendMessage(ChatColor.YELLOW + "Die Map wurde gelöscht");
+                        player.sendMessage(ChatColor.YELLOW + "Die Map wurde gelöscht.");
                     } else {
                     	MapLocations.add(frame.getLocation().toVector().toBlockVector());
-                        player.sendMessage(ChatColor.YELLOW + "Die Map wurde hinzugefügt");
+                        player.sendMessage(ChatColor.YELLOW + "Die Map wurde hinzugefügt.");
                     }      			
         		}
         		event.setCancelled(true);
@@ -57,10 +57,10 @@ public class MapListener implements Listener {
         		if(frame.getItem() != null && frame.getItem().getType() == Material.MAP){
                     if(MapLocations.mapLocations.contains(frame.getLocation().toVector().toBlockVector())) {
                     	MapLocations.remove(frame.getLocation().toVector().toBlockVector());
-                        player.sendMessage(ChatColor.YELLOW + "Die Map wurde gelöscht");
+                        player.sendMessage(ChatColor.YELLOW + "Die Map wurde gelöscht.");
                     } else {
                     	MapLocations.add(frame.getLocation().toVector().toBlockVector());
-                        player.sendMessage(ChatColor.YELLOW + "Die Map wurde hinzugefügt");
+                        player.sendMessage(ChatColor.YELLOW + "Die Map wurde hinzugefügt.");
                     }      			
         		}
         		event.setCancelled(true);
