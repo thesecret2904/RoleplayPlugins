@@ -155,7 +155,7 @@ public class RoleplayListener implements Listener{
 		if(material == Material.LAVA || material == Material.STATIONARY_LAVA || material == Material.TNT || material == Material.BEDROCK){
 			Player player = event.getPlayer();
 			if(!(Players.getPlayerEntry(player.getName()).getAdminlevel() > Adminlevel.USER)){
-				ChatUtils.sendMessageToAdmins(ChatColor.RED + player.getName() + " versuchte einen Block von (" + material.toString() + ") zu platzieren.");
+				ChatUtils.sendMessageToAdmins(ChatColor.RED + player.getName() + " versuchte (" + material.toString() + ") zu platzieren.");
 				event.setCancelled(true);
 			}
 		}	
@@ -167,7 +167,7 @@ public class RoleplayListener implements Listener{
 		if(material == Material.LAVA_BUCKET){
 			Player player = event.getPlayer();
 			if(!(Players.getPlayerEntry(player.getName()).getAdminlevel() > Adminlevel.USER)){
-				ChatUtils.sendMessageToAdmins(ChatColor.RED + player.getName() + " versuchte einen Eimer von (" + material.toString() + ") zu platzieren.");
+				ChatUtils.sendMessageToAdmins(ChatColor.RED + player.getName() + " versuchte einen Eimer mit (" + material.toString() + ") zu platzieren.");
 				event.setCancelled(true);
 			}			
 		}
